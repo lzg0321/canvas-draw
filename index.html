@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas</title>
+    <style>
+        html,body{
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="content">
+    <canvas width="960" height="640" id="canvas"></canvas>
+</div>
+<script>
+    function g(id){
+       return document.getElementById(id);
+    }
+    var canvas=g("canvas");
+    var ctx=canvas.getContext('2d');
+    ctx.strokeStyle="#000";
+    ctx.lineCap ="round";
+    ctx.lineJoin ="round";
+    ctx.lineWidth=10;
+    var isDrawing=false;
+    var oldX;
+    var oldY;
+    var oldMidX=0;
+    var oldMidY=0;
+    var oldDate=0;
+
+    canvas.addEventListener("mousedown",function(e){
+        isDrawing=true;
+        oldX=oldMidX= e.clientX;
+        oldY=oldMidY= e.clientY;
+    });
+    canvas.addEventListener("mouseup",function(e){
+        isDrawing=false;
+    });
+    canvas.addEventListener("mousemove",function(e){
+        if(!isDrawing){
+            return;
+        }
+        var now=new Date();
+        if(now-oldDate<=30){
+            return;
+        }
+        oldDate=now;
+        var midPointX = oldX + e.clientX>>1;
+        var midPointY = oldY + e.clientY>>1;
+        ctx.moveTo(midPointX,midPointY);
+        ctx.quadraticCurveTo(oldX, oldY,oldMidX, oldMidY);
+        ctx.stroke();
+        oldMidX=midPointX;
+        oldMidY=midPointY;
+        oldX= e.clientX;
+        oldY= e.clientY;
+    });
+</script>
+</body>
+</html>
